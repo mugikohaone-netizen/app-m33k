@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ごはんまもり隊</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN',sans-serif;background:#F7F3EC;background-image:repeating-linear-gradient(135deg,rgba(63,92,107,.03) 0,rgba(63,92,107,.03) 1px,transparent 1px,transparent 14px);color:#34302B;min-height:100vh;padding:22px 14px 52px}
+.g-wrap{max-width:480px;margin:0 auto;min-width:0}
+.g-header{text-align:center;margin-bottom:16px}
+.g-eyebrow{font-size:11px;letter-spacing:.18em;color:#9C8F7E}
+.g-title{font-family:'Shippori Mincho',serif;font-size:26px;font-weight:700;margin:6px 0}
+.g-sub{font-size:12.5px;color:#6B6258;line-height:1.7}
+.intro{font-size:13px;color:#6B6258;line-height:1.8;margin-bottom:14px}
+.intro ol{margin:8px 0 0;padding-left:20px}
+.intro li{margin-bottom:4px}
+.card{background:#FFFCF7;border:1px solid #E5DDD0;border-radius:16px;padding:16px;margin-bottom:14px}
+.stitle{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:700;margin:0 0 3px;display:flex;align-items:center;gap:6px}
+.sstep{font-size:11px;color:#9C8F7E;margin:0 0 10px}
+hr.divider{border:none;border-top:1px solid #E5DDD0;margin:12px 0}
+.sec-label{font-size:12px;color:#6B6258;margin:0 0 6px;font-weight:600}
+
+/* profile */
+.sex-toggle{display:flex;border:1px solid #E5DDD0;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sex-btn{flex:1;padding:9px 0;border:none;font-size:13px;font-family:inherit;background:#FFF;color:#6B6258;cursor:pointer}
+.sex-btn.on{background:#6F8C6A;color:#FFF;font-weight:700}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.plabel{font-size:11px;color:#6B6258;display:block;margin-bottom:3px}
+
+/* auto banner */
+.auto-banner{background:#EDF2EC;border:1px solid #C8D9C5;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.auto-title{font-size:11px;color:#4A6847;font-weight:700;margin:0 0 6px}
+.auto-row{display:flex;flex-wrap:wrap;gap:10px}
+.auto-item{font-size:12px;color:#4A6847}
+.auto-num{font-weight:700;font-size:14px}
+.auto-note{font-size:10.5px;color:#6B6258;margin-top:4px}
+
+/* meal style */
+.meal-style-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.meal-col{display:flex;flex-direction:column;align-items:center;gap:5px}
+.meal-col-label{font-size:11px;color:#6B6258;font-weight:600;text-align:center}
+.style-btn{width:100%;padding:7px 3px;border:1px solid #E5DDD0;border-radius:10px;background:#FFF;color:#6B6258;font-size:11px;font-family:inherit;cursor:pointer;text-align:center;line-height:1.4}
+.style-btn.on-easy{background:#3F5C6B;border-color:#3F5C6B;color:#FFF;font-weight:700}
+.style-btn.on-normal{background:#6F8C6A;border-color:#6F8C6A;color:#FFF;font-weight:700}
+.style-btn.on-fancy{background:#C17D3C;border-color:#C17D3C;color:#FFF;font-weight:700}
+.style-legend{display:flex;flex-direction:column;gap:4px;background:#F7F3EC;border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#6B6258;line-height:1.5}
+
+/* tools */
+.tools-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;width:100%}
+.tool-chip{padding:6px 10px;border:1px solid #E5DDD0;border-radius:20px;background:#FFF;color:#6B6258;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.tool-chip.on{background:#3F5C6B;border-color:#3F5C6B;color:#FFF;font-weight:700}
+.tool-other{display:flex;align-items:center;gap:6px;margin-top:4px;margin-bottom:2px}
+.tool-other-label{font-size:11px;color:#9C8F7E;white-space:nowrap;flex-shrink:0}
+.tool-other-input{flex:1;min-width:0;border:1px solid #E5DDD0;border-radius:10px;padding:7px 10px;font-size:13px;font-family:inherit;background:#FFF;color:#34302B}
+.tool-other-input:focus{outline:2px solid #3F5C6B;outline-offset:1px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;width:100%}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;font-size:12px;font-family:inherit;cursor:pointer;border:1px solid #E5DDD0;background:#FFF;color:#6B6258;white-space:nowrap}
+.chip.on{background:#6F8C6A;border-color:#6F8C6A;color:#FFF}
+.chip.add-btn{border:1px dashed #B0A898;color:#9C8F7E}
+.add-panel{background:#F7F3EC;border:1px solid #E5DDD0;border-radius:12px;padding:10px 12px;margin-top:6px;display:none}
+.add-panel.open{display:block}
+.add-panel-title{font-size:11px;color:#6B6258;margin:0 0 8px}
+
+/* restriction inputs */
+.rlimit-list{display:flex;flex-direction:column;gap:8px;margin:10px 0 4px}
+.rlimit-row{display:flex;align-items:center;gap:8px;width:100%}
+.rlimit-label{font-size:12px;color:#5C5347;width:76px;flex-shrink:0}
+.rlimit-input{flex:1;min-width:0;border:1px solid #E5DDD0;border-radius:10px;padding:7px 10px;font-size:14px;font-family:inherit;background:#FFF;color:#34302B}
+.rlimit-unit{font-size:12px;color:#9C8F7E;width:34px;flex-shrink:0}
+.rlimit-sub{font-size:10.5px;line-height:1.5;margin-left:84px;margin-top:-4px}
+.rlimit-sub.auto{color:#6F8C6A}
+.rlimit-sub.hint{color:#9C8F7E}
+
+/* inputs */
+.ifield{border:1px solid #E5DDD0;border-radius:10px;padding:9px 10px;font-size:14px;font-family:inherit;background:#FFF;color:#34302B;width:100%}
+.ifield:focus{outline:2px solid #6F8C6A;outline-offset:1px}
+.tfield{border:1px solid #E5DDD0;border-radius:10px;padding:9px 10px;font-size:14px;font-family:inherit;background:#FFF;color:#34302B;width:100%;resize:vertical}
+.tfield:focus{outline:2px solid #6F8C6A;outline-offset:1px}
+.flabel{font-size:12px;color:#6B6258;display:block;margin-bottom:4px}
+.fblock{margin-bottom:10px}
+
+/* buttons */
+.btn-p{background:#6F8C6A;color:#FFF;border:none;border-radius:12px;padding:13px 16px;font-size:15px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;width:100%;margin-top:12px}
+.btn-c{background:#FFF;color:#3F5C6B;border:1px solid #3F5C6B;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;width:100%;margin-top:10px}
+.btn-c.done{background:#6F8C6A;border-color:#6F8C6A;color:#FFF}
+.prompt-box{width:100%;border:1px solid #E5DDD0;border-radius:10px;background:#FBF8F2;color:#5C5347;font-size:12px;line-height:1.8;padding:12px;font-family:inherit;resize:vertical;margin-top:10px;display:none}
+.prompt-box.open{display:block}
+.usage-hint{font-size:12px;color:#6B6258;line-height:1.8;margin-top:10px;background:#FBE9DD;border:1px solid #F0D2BD;border-radius:12px;padding:10px 12px;display:none}
+.usage-hint.open{display:block}
+.copy-wrap{display:none;margin-top:10px}
+.copy-wrap.open{display:block}
+
+/* followup */
+.chk-row{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#6B6258;margin:8px 0;cursor:pointer}
+.meal-checks{display:flex;gap:14px;margin:6px 0 10px;flex-wrap:wrap}
+.ex-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px}
+.ex-field{display:flex;flex-direction:column;gap:3px}
+.ex-field span{font-size:11px;color:#6B6258}
+.ex-inputs{display:none}
+.ex-inputs.open{display:block}
+.warn{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:#B5613A;background:#FFF3EA;border:1px solid #F0D2BD;border-radius:10px;padding:8px 10px;margin-top:6px;line-height:1.6}
+.hint-text{font-size:11.5px;color:#9C8F7E;line-height:1.7;margin-top:6px}
+.disclaimer{font-size:11px;color:#9C8F7E;text-align:center;margin-top:22px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="g-wrap">
+
+  <div class="g-header">
+    <div class="g-eyebrow">めざせ、無理せず続ける</div>
+    <div class="g-title">ごはんまもり隊</div>
+    <div class="g-sub">今日も、がんばらなくて、いいから。</div>
+  </div>
+
+  <div class="intro">
+    ChatGPTやClaudeなどのAIチャットに貼り付ける「お願い文」を作るツールです。
+    <ol>
+      <li>情報を入力して「プロンプトを作る」</li>
+      <li>できた文章をコピーしてAIチャットに貼り付ける</li>
+      <li>予定外に食べたら②で報告文を作って同じチャットに貼り付ける</li>
+    </ol>
+  </div>
+
+  <!-- ① プロンプト -->
+  <div class="card">
+    <h2 class="stitle">🛡 ① 今日の献立プロンプト</h2>
+    <p class="sstep">プロフィールを入れると制限値を自動で計算します。空白でも使えます。</p>
+
+    <!-- 性別 -->
+    <div class="sex-toggle">
+      <button class="sex-btn" id="btn-male" onclick="setSex('male')">男性</button>
+      <button class="sex-btn" id="btn-female" onclick="setSex('female')">女性</button>
+    </div>
+
+    <!-- 身体 -->
+    <div class="pgrid">
+      <label><span class="plabel">年齢(歳)</span>
+        <input class="ifield" type="number" id="inp-age" min="1" max="120" placeholder="例: 65" oninput="updateAuto()">
+      </label>
+      <label><span class="plabel">身長(cm)</span>
+        <input class="ifield" type="number" id="inp-ht" min="100" max="250" placeholder="例: 165" oninput="updateAuto()">
+      </label>
+      <label><span class="plabel">体重(kg)</span>
+        <input class="ifield" type="number" id="inp-wt" min="20" max="300" step="0.1" placeholder="例: 60" oninput="updateAuto()">
+      </label>
+    </div>
+
+    <!-- 自動計算バナー -->
+    <div class="auto-banner">
+      <div class="auto-title" id="auto-title">✨ 標準値(プロフィール未入力)</div>
+      <div class="auto-row" id="auto-row"></div>
+      <div class="auto-note" id="auto-note1"></div>
+      <div class="auto-note">入力欄に数値を入れると医師の指示値で上書きできます</div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- 食事スタイル -->
+    <div class="sec-label">🍽️ 今日の食事スタイル</div>
+    <div class="meal-style-grid" id="meal-style-grid"></div>
+    <div class="style-legend">
+      <div>🛒 <strong>手抜き</strong>: 市販品・温めるだけ・火を使わない。調理負担ゼロ。</div>
+      <div>🍳 <strong>普通</strong>: 一般的な家庭料理。15〜30分程度で作れる。</div>
+      <div>✨ <strong>豪華</strong>: 制限の範囲内で最大限の満足感。香り・出汁・食感・見た目を重視、または手の込んだ料理。AIが状況に合わせて判断。</div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- 調理器具 -->
+    <div class="sec-label">🍴 使える調理器具</div>
+    <div class="tools-grid" id="tools-grid"></div>
+    <div class="tool-other">
+      <span class="tool-other-label">その他:</span>
+      <input class="tool-other-input" type="text" id="other-tool" placeholder="例: ホットプレート、たこ焼き器">
+    </div>
+    <p style="font-size:11px;color:#9C8F7E;margin-top:2px;margin-bottom:0">選んだ器具だけを使う献立をAIが提案します</p>
+
+    <hr class="divider">
+
+    <!-- 制限項目 -->
+    <div class="sec-label">制限する栄養素</div>
+    <div class="chips" id="chips-active"></div>
+    <div class="add-panel" id="add-panel">
+      <div class="add-panel-title">追加できる制限項目(タップで追加)</div>
+      <div class="chips" id="chips-extra"></div>
+    </div>
+    <div class="rlimit-list" id="rlimit-list"></div>
+
+    <hr class="divider">
+
+    <div class="fblock">
+      <label class="flabel">避けたい食材・調理法(NGリスト)</label>
+      <textarea class="tfield" id="ng-list" rows="2" placeholder="例: 漬物、インスタント麺、揚げ物の重ね使い"></textarea>
+    </div>
+    <div class="fblock">
+      <label class="flabel">今日のリクエスト・体調</label>
+      <textarea class="tfield" id="today-input" rows="2" placeholder="例: 少し疲れている。夜は鍋が食べたい。子どもの誕生日。"></textarea>
+    </div>
+
+    <button class="btn-p" onclick="buildMaster()">✨ プロンプトを作る</button>
+    <textarea class="prompt-box" id="master-prompt" rows="22" readonly></textarea>
+    <div class="copy-wrap" id="master-copy-wrap">
+      <button class="btn-c" id="master-copy-btn" onclick="copyPrompt('master-prompt','master-copy-btn')">📋 コピーする</button>
+      <p class="usage-hint open">コピーした文章を、ChatGPTやClaudeなどのAIチャットの最初のメッセージとして貼り付けてください。</p>
+    </div>
+  </div>
+
+  <!-- ② 予定外 -->
+  <div class="card">
+    <h2 class="stitle">② 予定外に食べた</h2>
+    <p class="sstep">同じAIチャットに続けて貼り付ける報告文を作ります</p>
+
+    <div class="fblock">
+      <label class="flabel">何を食べましたか?</label>
+      <textarea class="tfield" id="eaten-desc" rows="2" placeholder="例: スーパーのポテトサラダを小鉢1杯"></textarea>
+    </div>
+
+    <label class="chk-row">
+      <input type="checkbox" id="show-ex" onchange="toggleEx()">
+      パッケージなどに書かれた数値が分かる場合は入力する
+    </label>
+
+    <div class="ex-inputs" id="ex-inputs">
+      <div class="ex-grid">
+        <label class="ex-field"><span>塩分(g)</span>
+          <input class="ifield" type="number" id="ex-salt" min="0" step="0.1" oninput="checkAbn()">
+        </label>
+        <label class="ex-field"><span>糖質(g)</span>
+          <input class="ifield" type="number" id="ex-sugar" min="0" step="1" oninput="checkAbn()">
+        </label>
+        <label class="ex-field"><span>カロリー(kcal)</span>
+          <input class="ifield" type="number" id="ex-cal" min="0" step="1" oninput="checkAbn()">
+        </label>
+      </div>
+      <div id="abn-warns"></div>
+    </div>
+
+    <p class="hint-text" id="hint-noex">数値が分からない場合は、AIが推定値×1.2で少し厳しめに計算します。</p>
+
+    <p class="flabel" style="margin-top:12px;margin-bottom:4px">まだ食べていない食事</p>
+    <div class="meal-checks">
+      <label class="chk-row" style="margin:0"><input type="checkbox" id="rem-breakfast"> 朝ごはん</label>
+      <label class="chk-row" style="margin:0"><input type="checkbox" id="rem-lunch" checked> 昼ごはん</label>
+      <label class="chk-row" style="margin:0"><input type="checkbox" id="rem-dinner" checked> 晩ごはん</label>
+    </div>
+
+    <button class="btn-p" onclick="buildFollowup()">✨ 報告文を作る</button>
+    <textarea class="prompt-box" id="followup-prompt" rows="8" readonly></textarea>
+    <div class="copy-wrap" id="followup-copy-wrap">
+      <button class="btn-c" id="followup-copy-btn" onclick="copyPrompt('followup-prompt','followup-copy-btn')">📋 コピーする</button>
+      <p class="usage-hint open">①で使ったAIチャットに、続けてこの文章を貼り付けてください。</p>
+    </div>
+  </div>
+
+  <p class="disclaimer">※本提案は補助情報です。治療方針や実際の食事は、主治医・管理栄養士の指示を優先してください。</p>
+</div>
+
+<script>
+// ── データ ───────────────────────────────────────────────────
+const ALL_R = [
+  {key:'salt',       label:'塩分',           unit:'g',   step:'0.1', autoKey:'salt',    def:6,    hint:'厚労省目標: 男性7.5g未満・女性6.5g未満'},
+  {key:'sugar',      label:'糖質',           unit:'g',   step:'1',   autoKey:'sugar',   def:130,  hint:'カロリーの約50%を糖質で'},
+  {key:'calorie',    label:'カロリー',       unit:'kcal',step:'10',  autoKey:'calorie', def:1800, hint:'BMR×活動係数から算出'},
+  {key:'protein',    label:'タンパク質',     unit:'g',   step:'1',   autoKey:'protein', def:60,   hint:'腎臓病では体重×0.6〜0.8gに制限することも'},
+  {key:'fat',        label:'脂質',           unit:'g',   step:'1',   autoKey:'fat',     def:50,   hint:'カロリーの約25%を脂質で'},
+  {key:'potassium',  label:'カリウム',       unit:'mg',  step:'100', autoKey:null,      def:1500, hint:'腎臓病: 1500mg/日以下が目安'},
+  {key:'phosphorus', label:'リン',           unit:'mg',  step:'50',  autoKey:null,      def:700,  hint:'腎臓病: タンパク質量×15mg/g程度'},
+  {key:'fluid',      label:'水分',           unit:'ml',  step:'50',  autoKey:null,      def:1500, hint:'心不全・腎臓病で制限あり'},
+  {key:'purine',     label:'プリン体',       unit:'mg',  step:'10',  autoKey:null,      def:400,  hint:'痛風・高尿酸血症: 400mg/日以下'},
+  {key:'cholesterol',label:'コレステロール', unit:'mg',  step:'10',  autoKey:null,      def:200,  hint:'脂質異常症: 200mg/日未満'},
+  {key:'fiber',      label:'食物繊維',       unit:'g',   step:'1',   autoKey:null,      def:20,   hint:'目標量: 男性21g以上・女性18g以上'},
+  {key:'saturated',  label:'飽和脂肪酸',     unit:'g',   step:'0.5', autoKey:null,      def:15,   hint:'脂質異常症: 総カロリーの7%以下'},
+];
+const DEFAULT_KEYS = ['salt','sugar','calorie','protein','fat'];
+const TOOLS = [
+  {key:'microwave',  label:'電子レンジ'},
+  {key:'ih',         label:'IHコンロ'},
+  {key:'gas',        label:'ガスコンロ'},
+  {key:'rice',       label:'炊飯器'},
+  {key:'toaster',    label:'トースター'},
+  {key:'oven',       label:'オーブン'},
+  {key:'pressure',   label:'圧力鍋'},
+  {key:'airfryer',   label:'エアフライヤー'},
+  {key:'blender',    label:'ミキサー/ブレンダー'},
+  {key:'steamer',    label:'蒸し器'},
+];
+const MEAL_STYLES = [
+  {key:'easy',  label:'手抜き', emoji:'🛒'},
+  {key:'normal',label:'普通',   emoji:'🍳'},
+  {key:'fancy', label:'豪華',   emoji:'✨'},
+];
+const MEAL_KEYS   = ['breakfast','lunch','dinner'];
+const MEAL_LABELS = {breakfast:'朝ごはん', lunch:'昼ごはん', dinner:'晩ごはん'};
+
+// ── 状態 ─────────────────────────────────────────────────────
+let state = {
+  sex: '',
+  autoRec: null,
+  activeKeys: [...DEFAULT_KEYS],
+  limitVals: {},
+  activeTools: ['microwave','ih','gas','rice'],
+  mealStyles: {breakfast:'normal', lunch:'normal', dinner:'normal'},
+  showAddPanel: false,
+};
+
+// ── 自動計算 ─────────────────────────────────────────────────
+function calcRec(sex, age, h, w) {
+  const bmr = sex === 'male'
+    ? 10*w + 6.25*h - 5*age + 5
+    : 10*w + 6.25*h - 5*age - 161;
+  const cal  = Math.round((bmr*1.3)/50)*50;
+  const sugar = Math.round((cal*0.5)/4/5)*5;
+  const protein = Math.round(w);
+  const fat = Math.round((cal*0.25)/9/5)*5;
+  const salt = sex==='male' ? 7.0 : 6.0;
+  return {calorie:cal, sugar, protein, fat, salt};
+}
+const DEFAULT_REC = calcRec('male',60,165,65);
+
+function getEffective(key) {
+  const v = state.limitVals[key];
+  if (v !== undefined && v !== '') return Number(v);
+  const r = ALL_R.find(x=>x.key===key);
+  if (r.autoKey && state.autoRec) return state.autoRec[r.autoKey];
+  return r.def;
+}
+
+// ── 初期描画 ─────────────────────────────────────────────────
+function init() {
+  renderMealStyleGrid();
+  renderToolsGrid();
+  renderChips();
+  renderRlimits();
+  renderAutoBanner();
+}
+
+// ── 性別 ─────────────────────────────────────────────────────
+function setSex(s) {
+  state.sex = state.sex === s ? '' : s;
+  document.getElementById('btn-male').classList.toggle('on', state.sex==='male');
+  document.getElementById('btn-female').classList.toggle('on', state.sex==='female');
+  updateAuto();
+}
+
+// ── 自動計算更新 ─────────────────────────────────────────────
+function updateAuto() {
+  const a = Number(document.getElementById('inp-age').value);
+  const h = Number(document.getElementById('inp-ht').value);
+  const w = Number(document.getElementById('inp-wt').value);
+  const s = state.sex || 'male';
+  state.autoRec = (a>0 && h>0 && w>0) ? calcRec(s,a,h,w) : null;
+  renderAutoBanner();
+  renderRlimits();
+}
+
+function renderAutoBanner() {
+  const rec = state.autoRec || DEFAULT_REC;
+  const isAuto = !!state.autoRec;
+  document.getElementById('auto-title').textContent =
+    isAuto ? '✨ プロフィールから算出した推奨値' : '✨ 標準値(プロフィール未入力)';
+  document.getElementById('auto-note1').textContent =
+    isAuto ? 'Mifflin-St Jeor式BMR × 活動係数1.3で計算' : '';
+
+  const showKeys = DEFAULT_KEYS.filter(k=>ALL_R.find(r=>r.key===k)?.autoKey);
+  document.getElementById('auto-row').innerHTML = showKeys.map(k=>{
+    const r=ALL_R.find(x=>x.key===k);
+    const v=r.autoKey?rec[r.autoKey]:r.def;
+    return `<span class="auto-item">${r.label} <span class="auto-num">${v}${r.unit}</span></span>`;
+  }).join('');
+}
+
+// ── 食事スタイルグリッド ────────────────────────────────────
+function renderMealStyleGrid() {
+  const grid = document.getElementById('meal-style-grid');
+  grid.innerHTML = MEAL_KEYS.map(mk => `
+    <div class="meal-col">
+      <span class="meal-col-label">${MEAL_LABELS[mk]}</span>
+      ${MEAL_STYLES.map(s=>`
+        <button class="style-btn ${state.mealStyles[mk]===s.key?'on-'+s.key:''}"
+          onclick="setMealStyle('${mk}','${s.key}')">
+          ${s.emoji} ${s.label}
+        </button>`).join('')}
+    </div>`).join('');
+}
+
+function setMealStyle(meal, style) {
+  state.mealStyles[meal] = style;
+  renderMealStyleGrid();
+}
+
+// ── 調理器具 ─────────────────────────────────────────────────
+function renderToolsGrid() {
+  document.getElementById('tools-grid').innerHTML = TOOLS.map(t=>`
+    <button class="tool-chip ${state.activeTools.includes(t.key)?'on':''}"
+      onclick="toggleTool('${t.key}')">${t.label}</button>
+  `).join('');
+}
+
+function toggleTool(key) {
+  if (state.activeTools.includes(key)) {
+    state.activeTools = state.activeTools.filter(k=>k!==key);
+  } else {
+    state.activeTools.push(key);
+  }
+  renderToolsGrid();
+}
+
+// ── 制限チップ ───────────────────────────────────────────────
+function renderChips() {
+  const extraKeys = ALL_R.map(r=>r.key).filter(k=>!DEFAULT_KEYS.includes(k));
+
+  // アクティブチップ
+  const active = document.getElementById('chips-active');
+  active.innerHTML = state.activeKeys.map(k=>{
+    const r=ALL_R.find(x=>x.key===k);
+    return `<button class="chip on" onclick="toggleKey('${k}')">${r.label} ✕</button>`;
+  }).join('') +
+  `<button class="chip add-btn" onclick="toggleAddPanel()">＋ 追加</button>`;
+
+  // 追加パネル
+  const panel = document.getElementById('add-panel');
+  const avail = extraKeys.filter(k=>!state.activeKeys.includes(k));
+  panel.classList.toggle('open', state.showAddPanel && avail.length>0);
+  document.getElementById('chips-extra').innerHTML = avail.map(k=>{
+    const r=ALL_R.find(x=>x.key===k);
+    return `<button class="chip" onclick="toggleKey('${k}')">＋ ${r.label}</button>`;
+  }).join('');
+}
+
+function toggleKey(key) {
+  if (state.activeKeys.includes(key)) {
+    state.activeKeys = state.activeKeys.filter(k=>k!==key);
+    delete state.limitVals[key];
+  } else {
+    state.activeKeys.push(key);
+  }
+  renderChips();
+  renderRlimits();
+}
+
+function toggleAddPanel() {
+  state.showAddPanel = !state.showAddPanel;
+  renderChips();
+}
+
+// ── 制限値入力 ───────────────────────────────────────────────
+function renderRlimits() {
+  const list = document.getElementById('rlimit-list');
+  list.innerHTML = state.activeKeys.map(k=>{
+    const r=ALL_R.find(x=>x.key===k);
+    const eff=getEffective(k);
+    const isAuto = r.autoKey && state.autoRec &&
+      (state.limitVals[k]===undefined||state.limitVals[k]==='');
+    const sub = isAuto
+      ? `<div class="rlimit-sub auto">▲ プロフィールから自動計算: ${eff}${r.unit}</div>`
+      : `<div class="rlimit-sub hint">${r.hint}</div>`;
+    return `
+      <div>
+        <div class="rlimit-row">
+          <span class="rlimit-label">${r.label}</span>
+          <input class="rlimit-input" type="number" min="0" step="${r.step}"
+            placeholder="${eff}" value="${state.limitVals[k]??''}"
+            oninput="setLimit('${k}',this.value)">
+          <span class="rlimit-unit">${r.unit}</span>
+        </div>
+        ${sub}
+      </div>`;
+  }).join('');
+}
+
+function setLimit(key, val) {
+  state.limitVals[key] = val;
+  renderRlimits();
+}
+
+// ── 予定外入力 ───────────────────────────────────────────────
+function toggleEx() {
+  const on = document.getElementById('show-ex').checked;
+  document.getElementById('ex-inputs').classList.toggle('open', on);
+  document.getElementById('hint-noex').style.display = on ? 'none' : '';
+}
+
+function checkAbn() {
+  const salt = document.getElementById('ex-salt').value;
+  const sugar = document.getElementById('ex-sugar').value;
+  const cal = document.getElementById('ex-cal').value;
+  const warns = [];
+  if (salt!=='' && (Number(salt)<0.05||Number(salt)>10))
+    warns.push(`塩分 ${salt}g は一般的な範囲から外れているようです`);
+  if (sugar!=='' && Number(sugar)>120)
+    warns.push(`糖質 ${sugar}g は一般的な範囲から外れているようです`);
+  if (cal!=='' && (Number(cal)<30||Number(cal)>1500))
+    warns.push(`カロリー ${cal}kcal は一般的な範囲から外れているようです`);
+  document.getElementById('abn-warns').innerHTML = warns.map(w=>
+    `<div class="warn">⚠️ <span>${w} — 入力間違いがないか確認してください。</span></div>`
+  ).join('');
+}
+
+// ── プロンプト生成 ───────────────────────────────────────────
+function profileStr() {
+  const parts=[];
+  if(state.sex) parts.push(state.sex==='male'?'男性':'女性');
+  const age=document.getElementById('inp-age').value;
+  const ht=document.getElementById('inp-ht').value;
+  const wt=document.getElementById('inp-wt').value;
+  if(age) parts.push(`${age}歳`);
+  if(ht)  parts.push(`身長${ht}cm`);
+  if(wt)  parts.push(`体重${wt}kg`);
+  return parts.length ? parts.join('・') : '未入力(標準値を使用)';
+}
+
+function buildMaster() {
+  const limitLines = state.activeKeys.map(k=>{
+    const r=ALL_R.find(x=>x.key===k);
+    return `  ・${r.label}: ${getEffective(k)}${r.unit}`;
+  }).join('\n');
+
+  const toolLabels = state.activeTools.map(k=>TOOLS.find(t=>t.key===k)?.label).filter(Boolean);
+  const otherTool = document.getElementById('other-tool').value.trim();
+  if(otherTool) toolLabels.push(otherTool);
+  const toolsStr = toolLabels.length>0 ? toolLabels.join('・') : 'なし(調理器具の指定なし)';
+
+  const styleLines = MEAL_KEYS.map(mk=>{
+    const s=MEAL_STYLES.find(x=>x.key===state.mealStyles[mk]);
+    const descs={easy:'市販品・温めるだけ・火を使わない。調理負担ゼロ。',normal:'一般的な家庭料理。15〜30分程度で作れる。',fancy:'制限の範囲内で最大限の満足感。香り・出汁・食感・見た目を重視、または手の込んだ料理。AIが状況に合わせて判断。'};
+    return `  ・${MEAL_LABELS[mk]}: ${s.emoji}${s.label} — ${descs[s.key]}`;
+  }).join('\n');
+
+  const ng = document.getElementById('ng-list').value.trim()||'なし';
+  const today = document.getElementById('today-input').value.trim()||'特になし';
+  const calcNote = state.autoRec ? '(Mifflin-St Jeor式BMR×活動係数1.3で算出)' : '';
+
+  const text =
+`あなたは退院後の患者とその家族をやさしく支える「食事管理アシスタント」です。
+以下の【ユーザー情報】と【ルール】に従って、今日1日の朝・昼・晩の献立プランを提案してください。
+
+【ユーザー情報】
+・プロフィール: ${profileStr()}
+・1日の上限${calcNote}:
+${limitLines}
+・絶対NG食材・調理法: ${ng}
+・今日のリクエスト・体調: ${today}
+
+【今日の食事スタイル】
+各食事について、以下のスタイルで提案してください。
+${styleLines}
+
+「手抜き」の定義: 市販品・冷凍食品・電子レンジで温めるだけ・火を使わないなど、調理時間と負担をゼロに近づけること。
+「普通」の定義: 一般的な家庭料理。15〜30分程度で作れるもの。
+「豪華」の定義: 制限の範囲内で最大限の満足感を追求すること。以下の2つのアプローチをAIが状況に合わせて選んでよい。
+  ①香り・出汁・酸味・食感・見た目で満足感を引き上げる(塩分や糖質は増やさない)
+  ②時間と手間をかけた、丁寧な手料理(煮込み・下ごしらえなど)
+  ※どちらも栄養制限は必ず守ること。
+
+【使える調理器具】
+${toolsStr}
+※上記の器具のみを使う献立を提案してください。
+
+【絶対ルール】
+1. カーナビ型(3食提示)
+1日の上限をすべて超えない範囲で、朝・昼・晩の3食の献立をまとめて提示してください。数値をぴったり上限に合わせる必要はありません。多少の余白(余裕)を残してOKです。
+
+2. ディナー防衛線(天引きシステム)
+夜ごはんが味気なくならないように、朝・昼の献立を考える時点で、夜のために各栄養素の一部をあらかじめ確保(天引き)しておいてください。
+
+3. リルート(軌道修正)のルール
+このあと私が「予定外に食べたもの」を報告したときは、次のルールで残りの枠を再計算し、まだ食べていない食事の献立を組み直してください。
+・数値が分かっている場合は、その数値をそのまま使う。
+・数値が分からない場合は、一般的な栄養成分を推測し、安全のため「推定値×1.2」を摂取量として使う。
+・報告された数値が極端に低い、または高い場合は「入力間違いではありませんか?」と確認する。
+
+4. NG食材・調理法は一切使わないでください。
+
+【出力トーン・免責事項】
+・患者と家族の苦労に寄り添い、決して否定しない温かい言葉で書いてください。
+・提案の最後に必ず次の一文を入れてください。
+「※本提案は補助情報です。治療方針や実際の食事は、主治医・管理栄養士の指示を優先してください。」`;
+
+  const ta = document.getElementById('master-prompt');
+  ta.value = text;
+  ta.rows = Math.min(30, text.split('\n').length + 3);
+  ta.classList.add('open');
+  document.getElementById('master-copy-wrap').classList.add('open');
+  document.getElementById('master-copy-btn').textContent = '📋 コピーする';
+  document.getElementById('master-copy-btn').classList.remove('done');
+  ta.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function buildFollowup() {
+  const desc = document.getElementById('eaten-desc').value.trim()||'(説明なし)';
+  const showEx = document.getElementById('show-ex').checked;
+  const exSalt  = document.getElementById('ex-salt').value;
+  const exSugar = document.getElementById('ex-sugar').value;
+  const exCal   = document.getElementById('ex-cal').value;
+  const hasEx = showEx && (exSalt!==''||exSugar!==''||exCal!=='');
+
+  const remBreakfast = document.getElementById('rem-breakfast').checked;
+  const remLunch     = document.getElementById('rem-lunch').checked;
+  const remDinner    = document.getElementById('rem-dinner').checked;
+  const tgt = [];
+  if(remBreakfast) tgt.push('朝ごはん');
+  if(remLunch)     tgt.push('昼ごはん');
+  if(remDinner)    tgt.push('晩ごはん');
+
+  const lines = ['【予定外に食べたものの報告】', `内容: ${desc}`];
+  if(hasEx){
+    lines.push('明示された栄養数値:');
+    if(exSalt!=='')  lines.push(`・塩分: ${exSalt}g`);
+    if(exSugar!=='') lines.push(`・糖質: ${exSugar}g`);
+    if(exCal!=='')   lines.push(`・カロリー: ${exCal}kcal`);
+  } else {
+    lines.push('※栄養数値は分かりません。ルール3に従って、推測値×1.2で計算してください。');
+  }
+  lines.push('');
+  lines.push(tgt.length>0
+    ? `まだ食べていない食事(${tgt.join('・')})の献立を、ルール3(リルート)に従って見直してください。`
+    : '今日の食事はすべて食べ終えています。今回の摂取量を踏まえて、今日全体の振り返りコメントをお願いします。'
+  );
+
+  const ta = document.getElementById('followup-prompt');
+  ta.value = lines.join('\n');
+  ta.rows = lines.length + 2;
+  ta.classList.add('open');
+  document.getElementById('followup-copy-wrap').classList.add('open');
+  document.getElementById('followup-copy-btn').textContent = '📋 コピーする';
+  document.getElementById('followup-copy-btn').classList.remove('done');
+  ta.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── コピー ───────────────────────────────────────────────────
+function copyPrompt(taId, btnId) {
+  const text = document.getElementById(taId).value;
+  const btn  = document.getElementById(btnId);
+  const fb = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(fb);
+  } else { fb(); }
+  btn.textContent = '✅ コピーしました！';
+  btn.classList.add('done');
+  setTimeout(()=>{ btn.textContent='📋 コピーする'; btn.classList.remove('done'); }, 2500);
+}
+
+init();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  }).then(()=>{
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
+</body>
+</html>
